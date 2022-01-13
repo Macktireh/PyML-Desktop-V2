@@ -1,4 +1,9 @@
 # Importer les bibliothèque
+
+
+
+
+
 if True:
     import os
     import tkinter as tk
@@ -12,7 +17,9 @@ if True:
     from datetime import date, datetime
     from openpyxl import load_workbook
     from dotenv import load_dotenv
-    from components.api import Api
+    from GetData.PostreSQL import PostgreSQL
+    from GetData.Previous import PreviousData
+    from Tools.treeview_listbox import FilTreeView, FilListBox
     
     # from tkinter_custom_button import TkinterCustomButton
     
@@ -80,11 +87,11 @@ class PyData:
         return typ
 
     def fil_data_to_treeview_listbox(self, df, w="all"):
-        if self.VarCheckBtn_add_index.get():
-            df.reset_index(inplace=True)
-            df = df.rename(columns={"index": "Id"})
+        # if self.VarCheckBtn_add_index.get():
+        #     df.reset_index(inplace=True)
+        #     df = df.rename(columns={"index": "Id"})
 
-        def fil_data_to_treeview():
+        """def fil_data_to_treeview():
             global count
             count = 0
 
@@ -121,24 +128,26 @@ class PyData:
                     )
                 count += 1
 
-            self.tv_All_Data.insert("", "end", values="")
+            self.tv_All_Data.insert("", "end", values="")"""
+            
 
-        def fil_column_to_listbox():
+        """def fil_column_to_listbox():
             self.Lbox.delete(0, "end")
             for id, column in enumerate(df.columns):
                 # v = self.VerifType(df, column)
                 values_listbox = f" {column}  : {self.VerifType(df, column)}      "
-                self.Lbox.insert(id, values_listbox)
+                self.Lbox.insert(id, values_listbox)"""
+            
 
         if w == "treeview":
-            fil_data_to_treeview()
+            FilTreeView.fil(self, self.tv_All_Data, df)
             self.Fonc_label_nbr_ligne_et_col()
         elif w == "listbox":
-            fil_column_to_listbox()
+            FilListBox.fil(self, self.Lbox, df)
             self.Fonc_label_nbr_ligne_et_col()
         else:
-            fil_data_to_treeview()
-            fil_column_to_listbox()
+            FilTreeView.fil(self, self.tv_All_Data, df)
+            FilListBox.fil(self, self.Lbox, df)
             self.Fonc_label_nbr_ligne_et_col()
 
     def Fonc_label_nbr_ligne_et_col(self):
@@ -146,7 +155,7 @@ class PyData:
         self.VarNbLigneCol.set(tx)
 
     def Load_Data_PosgreSQL(self):
-        Api(self.root)
+        PostgreSQL(self.root)
         """self.window_postgresql = tk.Toplevel(self.root)
         self.window_postgresql.grab_set()
         self.window_postgresql.title("PostgreSQL database")
@@ -382,11 +391,12 @@ class PyData:
             )
 
         else:
-            path_filename = filedialog.askopenfilename(
-                initialdir="E:\Total\Station Data\Master data\Data source",
-                title="Select A File",
-                filetype=(("All Files", "*.*")),
-            )
+            # path_filename = filedialog.askopenfilename(
+            #     initialdir="E:\Total\Station Data\Master data\Data source",
+            #     title="Select A File",
+            #     filetype=(("All Files", "*.*")),
+            # )
+            path_filename = ""
 
         if path_filename:
             # self.test['text'] = path_filename
@@ -403,10 +413,16 @@ class PyData:
                     elif excel_filename[-4:] == ".txt":
                         df = pd.read_table(excel_filename)
 
-                    else:
+                    elif excel_filename[-4:] == '.xls':
                         # if sheet == "":
                         df = pd.read_excel(excel_filename)
-
+                        
+                    elif excel_filename[-5:] == '.xlsx':
+                        # if sheet == "":
+                        df = pd.read_excel(excel_filename)
+                    else:
+                        pass
+                    
                         # else:
                         #     df1 = pd.read_excel(
                         #         excel_filename, sheet_name=sheet)
@@ -422,9 +438,14 @@ class PyData:
                 return df
 
             # df = Load_excel_data_1()
-            self.data_origine = Load_excel_data_1(self.path_import)
-            self.data_pre = self.data_origine.copy()
-            self.preview_data(self.path_import, self.data_pre)
+            try:
+                self.data_origine = Load_excel_data_1(self.path_import)
+                self.data_pre = self.data_origine.copy()
+                PreviousData(self.root, self.data_pre, self.path_import, self.tv_All_Data, self.Lbox, self.VarNbLigneCol, self.RomeveCol, self.transformBtn, self.saveBtn, self.exportBtn, self.button_executor_fx, self.button_remove_rows)
+                # self.switchButtonState()
+            except:
+                tk.messagebox.showerror("Information", "The file you have chosen is invalid")
+            # self.preview_data(self.path_import, self.data_pre)
 
         else:
             pass
@@ -437,7 +458,7 @@ class PyData:
 
         # global df
 
-        self.preview = tk.Toplevel(self.root)
+        """self.preview = tk.Toplevel(self.root)
         self.preview.grab_set()
         self.preview.title("Previous Data")
         self.preview.iconbitmap("media/logo.ico")
@@ -456,7 +477,7 @@ class PyData:
 
         def ok_data_V():
 
-            """Cette fonction valide les données et affiche toutes les données. Elle est relier au bouton ok pour valider"""
+            ""Cette fonction valide les données et affiche toutes les données. Elle est relier au bouton ok pour valider""
 
             self.fil_data_to_treeview_listbox(df, w="all")
             self.switchButtonState()
@@ -539,7 +560,7 @@ class PyData:
         for row in df_rows:
             tv1.insert("", "end", values=row)
 
-        return None
+        return None"""
     
     def CancelPreviwData(self):
         self.data_origine = pd.DataFrame()
@@ -549,21 +570,17 @@ class PyData:
     def Excel(self):
         self.typefile = "Excel"
         self.Load_data_file()
-        # self.preview_data(self.path_import, self.data_pre)
 
     def CSV(self):
         self.typefile = "CSV"
         self.Load_data_file()
-        # self.preview_data(self.path_import, self.data_pre)
 
     def TXT(self):
         self.typefile = "TXT"
         self.Load_data_file()
-        # self.preview_data(self.path_import, self.data_pre)
 
     def PostgreSQL(self):
         self.Load_Data_PosgreSQL()
-        # self.preview_data(self.path_import, self.data_pre)
 
     def BarMenu(self):
 
@@ -615,17 +632,6 @@ class PyData:
         # Barre entet
         self.barheader = tk.Frame(self.root, bd=20, bg="#FFA500", height=40)
         self.barheader.pack(side="top", fill="x")
-        # # titre
-        # self.maintitle = tk.Label(
-        #     self.barheader,
-        #     text="Welcome to Power Studio Data Desktop !",
-        #     font=("Algeria 20"),
-        #     bg="#FFA500",
-        # )
-        # self.maintitle.pack(side="bottom", fill="x")
-
-        # WidgetFrame = tk.Frame(self.root, bg='white').place(
-        #     relx=0.05, rely=0.1)
 
     def widgetGetData(self):
 
@@ -885,7 +891,6 @@ class PyData:
         self.exportBtn.place(relx=0.7, rely=0.8)
 
         self.Lbox.bind("<Double-Button-1>", self.Def_edit_name_col_in_entry)
-        # self.Lbox.bind("<ButtonRelease-1>", self.GetColumn_Id_Name_Type)
 
     def GetColumn_Id_Name_Type(self, e):
 

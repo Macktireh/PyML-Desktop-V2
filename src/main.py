@@ -25,9 +25,9 @@ def Exit(e):
 
 
 BtnExit = tk.Label(
-    splach_root, text="  X  ", fg="white", bg="#C60030", relief="sunken", bd=1
+    splach_root, text="  X  ", font=("Helvetica", 12), fg="black", relief="solid", bd=1
 )
-BtnExit.place(relx=0.94, rely=0.003)
+BtnExit.place(relx=0.92, rely=0.004)
 BtnExit.bind("<Button-1>", Exit)
 
 splach_logo = PhotoImage(file="media/WML.png")

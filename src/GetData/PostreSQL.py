@@ -1,43 +1,19 @@
+import os
 import pandas as pd
-import numpy as np
 import tkinter as tk
-from tkinter import PhotoImage
-from tkinter.scrolledtext import ScrolledText
 import psycopg2
 import sys
 
+from tkinter import PhotoImage
+from tkinter.scrolledtext import ScrolledText
+from dotenv import load_dotenv
+from Tools.Btns import LabelEntry
+
 sys.path.append('../')
+load_env = load_dotenv()
 
 
-class LabelEntry:
-    def __init__(self, root, label_text, textvar, show, x, y, width):
-        self.root = root
-        self.label_text = label_text
-        self.textvar = textvar
-        self.show = show
-        self.x = x
-        self.y = y
-        self.width = width
-        
-        self.label = tk.Label(
-            self.root, text=self.label_text, font=("Helvetica", 10)
-        ).place(relx=0.07, rely=0.2)
-        self.VarEntry = tk.StringVar()
-        self.VarEntry.set(self.textvar)
-        self.entry = tk.Entry(
-            self.root, textvariable=self.VarEntry, width=40, show=self.show
-        )
-        self.entry.place(relx=self.x, rely=self.y)
-        
-    def get_value_entry(self):
-        return self.entry.get()
-
-    def set_value_entry(self, value):
-        self.VarEntry.set(value)
-
-
-
-class Api:
+class PostgreSQL:
     def __init__(self, root):
         self.root = root
 
@@ -66,19 +42,19 @@ class Api:
         self.lbl_title.place(relx=0.25, rely=0.05)
 
         # Host
-        self.Entry_host = LabelEntry(self.window_postgresql, label_text='Host', textvar='localhost', x=0.28, y=0.2, width=40, show='')
+        self.Entry_host = LabelEntry(self.window_postgresql, label_text='Host', textvar=os.getenv('HOST'), x=0.28, y=0.2, width=40, show='')
 
         # Data Base Name
-        self.Entry_dbname = LabelEntry(self.window_postgresql, label_text='Database', textvar='dvdrental', x=0.28, y=0.25, width=40, show='')
+        self.Entry_dbname = LabelEntry(self.window_postgresql, label_text='Database', textvar=os.getenv('DBNAME'), x=0.28, y=0.25, width=40, show='')
 
         # Port
-        self.Entry_port = LabelEntry(self.window_postgresql, label_text='Port', textvar='5444', x=0.28, y=0.3, width=40, show='')
+        self.Entry_port = LabelEntry(self.window_postgresql, label_text='Port', textvar=os.getenv('PORT'), x=0.28, y=0.3, width=40, show='')
 
         # Username
-        self.Entry_username = LabelEntry(self.window_postgresql, label_text='Username', textvar='enterprisedb', x=0.28, y=0.35, width=40, show='')
+        self.Entry_username = LabelEntry(self.window_postgresql, label_text='Username', textvar=os.getenv('USER'), x=0.28, y=0.35, width=40, show='')
 
         # Password
-        self.Entry_password = LabelEntry(self.window_postgresql, label_text='Password', textvar='charco97', x=0.28, y=0.35, width=40, show='*')
+        self.Entry_password = LabelEntry(self.window_postgresql, label_text='Password', textvar=os.getenv('PASSWORD'), x=0.28, y=0.35, width=40, show='*')
 
         # label Text Widget pour ecrire su sql
         self.lbl_sql = tk.Label(
