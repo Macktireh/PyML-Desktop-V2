@@ -7,6 +7,7 @@ import sys
 from tkinter import PhotoImage
 from tkinter.scrolledtext import ScrolledText
 from dotenv import load_dotenv
+from GetData.Previous import PreviousData
 from Tools.Btns import LabelEntry
 
 sys.path.append('../')
@@ -14,7 +15,7 @@ load_env = load_dotenv()
 
 
 class PostgreSQL:
-    def __init__(self, root):
+    def __init__(self, root, tv_All_Data, Lbox, VarNbLigneCol, RomeveCol, transformBtn, saveBtn, exportBtn, button_executor_fx, button_remove_rows, data_origine, data_pre):
         self.root = root
 
         self.window_postgresql = tk.Toplevel(self.root)
@@ -23,6 +24,16 @@ class PostgreSQL:
         self.window_postgresql.iconbitmap("media/logo.ico")
         self.window_postgresql.geometry("500x600+15+15")
         self.window_postgresql.resizable(width=False, height=False)
+        
+        self.tv_All_Data = tv_All_Data
+        self.Lbox = Lbox
+        self.VarNbLigneCol = VarNbLigneCol
+        self.RomeveCol = RomeveCol
+        self.transformBtn = transformBtn
+        self.saveBtn = saveBtn
+        self.exportBtn = exportBtn
+        self.button_executor_fx = button_executor_fx 
+        self.button_remove_rows = button_remove_rows
 
 
         # Importation de l'icone de progresql
@@ -88,6 +99,7 @@ class PostgreSQL:
             command=self.Cancel_widow_prosgresql,
         )
         self.CacelPogreSQL.place(relx=0.50, rely=0.9)
+        
     
     
     def Cancel_widow_prosgresql(self):
@@ -133,7 +145,7 @@ class PostgreSQL:
                 self.path_import = f"Table data {self.Entry_dbname.get_value_entry()} from the PostgreSQL database "
 
                 from App import PyData
-                PyData.preview_data(self, self.path_import, self.data_pre)
+                PreviousData(self.root, self.data_pre, self.path_import, self.tv_All_Data, self.Lbox, self.VarNbLigneCol, self.RomeveCol, self.transformBtn, self.saveBtn, self.exportBtn, self.button_executor_fx, self.button_remove_rows)
                 self.window_postgresql.destroy()
             # except :
                 # tk.messagebox.showerror("Information", "Echec connexion !")

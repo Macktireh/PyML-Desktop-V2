@@ -3,6 +3,10 @@ import pandas as pd
 
 
 class DefTools:
+    def __init__(self, preview, data_origine, data_pre):
+        self.preview = preview
+        self.data_origine = data_origine
+        self.data_pre = data_pre
     
     def CheckType(self, df, column):
         if np.dtype(df[column]) == "object":
@@ -27,3 +31,8 @@ class DefTools:
     def Fonc_label_nbr_ligne_et_col(self, df, VarNbLigneCol):
         tx = f"rows : {df.shape[0]}  columns : {df.shape[1]}"
         VarNbLigneCol.set(tx)
+    
+    def CancelPreviwData(self):
+        self.data_origine = pd.DataFrame()
+        self.data_pre = pd.DataFrame()
+        self.preview.destroy()

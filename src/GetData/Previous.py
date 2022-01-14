@@ -7,7 +7,7 @@ from Tools.treeview_listbox import FilTreeView, FilListBox
 
 
 class PreviousData:
-    def __init__(self, root, df, path, tv_All_Data, Lbox, VarNbLigneCol,RomeveCol, transformBtn, saveBtn, exportBtn, button_executor_fx, button_remove_rows):
+    def __init__(self, root, df, path, tv_All_Data, Lbox, VarNbLigneCol,RomeveCol, transformBtn, saveBtn, exportBtn, button_executor_fx, button_remove_rows, data_origine, data_pre):
         self.root = root
         self.df = df
         self.path = path
@@ -20,6 +20,9 @@ class PreviousData:
         self.exportBtn = exportBtn
         self.button_remove_rows = button_remove_rows
         self.button_executor_fx = button_executor_fx
+        
+        self.data_origine = data_origine
+        self.data_pre = data_pre
         
         self.preview = tk.Toplevel(self.root)
         self.preview.grab_set()
@@ -144,8 +147,8 @@ class PreviousData:
             background="#CCCCCC",
             width=12,
             height=1,
-            command=None,
-            # command=self.CancelPreviwData,
+            # command=None,
+            command=DefTools.CancelPreviwData(self, self.preview, data_origine, data_pre)
         ).place(relx=0.48, rely=0.87)
 
         clear_data()

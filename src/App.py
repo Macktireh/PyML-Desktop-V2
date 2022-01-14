@@ -155,7 +155,7 @@ class PyData:
         self.VarNbLigneCol.set(tx)
 
     def Load_Data_PosgreSQL(self):
-        PostgreSQL(self.root)
+        PostgreSQL(self.root, self.tv_All_Data, self.Lbox, self.VarNbLigneCol, self.RomeveCol, self.transformBtn, self.saveBtn, self.exportBtn, self.button_executor_fx, self.button_remove_rows)
         """self.window_postgresql = tk.Toplevel(self.root)
         self.window_postgresql.grab_set()
         self.window_postgresql.title("PostgreSQL database")
